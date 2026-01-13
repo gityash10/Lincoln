@@ -1,0 +1,77 @@
+{
+  "manifest_version": 3,
+  "name": "Lincoln – AI Context Linker",
+  "version": "1.1.0",
+  "description": "Long chats, deep research, or model switching often break the flow. Lincoln let you Save important AI chats and continue them in new chat — no copy-paste, no summaries, no lost context. ",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background/serviceWorker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "storage/schema.js",
+        "storage/contextDB.js",
+        "utils/tokenEstimator.js",
+        "utils/platformDetector.js",
+        "utils/draggableButton.js",
+        "utils/selectionManager.js",
+        "inject/formatter.js",
+        "inject/chunker.js",
+        "inject/invisibleInjector.js",
+        "content/chatgptExtractor.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "js": [
+        "storage/schema.js",
+        "storage/contextDB.js",
+        "utils/tokenEstimator.js",
+        "utils/platformDetector.js",
+        "utils/draggableButton.js",
+        "utils/selectionManager.js",
+        "inject/formatter.js",
+        "inject/chunker.js",
+        "inject/invisibleInjector.js",
+        "content/geminiExtractor.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

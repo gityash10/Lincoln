@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lincoln – AI Context Linker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <img src="../icons/icon48.png" alt="Lincoln Logo" width="32" height="32" class="logo-img">
+        <h1>Lincoln</h1>
+      </div>
+      <span class="version">v1.1</span>
+    </header>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+      <button id="save-current" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+          <polyline points="17,21 17,13 7,13 7,21" />
+          <polyline points="7,3 7,8 15,8" />
+        </svg>
+        Save Current Chat
+      </button>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-value" id="total-contexts">0</span>
+        <span class="stat-label">Saved</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="chatgpt-count">0</span>
+        <span class="stat-label">ChatGPT</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="gemini-count">0</span>
+        <span class="stat-label">Gemini</span>
+      </div>
+    </div>
+
+    <!-- Context List -->
+    <section class="contexts-section">
+      <div class="section-header">
+        <h2>Saved Contexts</h2>
+        <button id="refresh-list" class="btn-icon" title="Refresh">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="contexts-list" class="contexts-list">
+        <!-- Contexts will be populated here -->
+        <div class="empty-state" id="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <p>No saved contexts yet</p>
+          <span>Save your first chat to get started</span>
+        </div>
+    </section>
+
+    <!-- Settings Section (Phase 2) -->
+    <section class="settings-section">
+      <div class="section-header">
+        <h2>Settings</h2>
+        <button id="toggle-settings" class="btn-icon" title="Toggle Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+      <div id="settings-panel" class="settings-panel hidden">
+        <!-- Button Visibility Toggle -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Floating Button</span>
+            <span class="setting-desc">Show "Save Context" button on page</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="button-visibility-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Token Limit Control (Phase 2) -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-label">Token Limit</span>
+            <span class="setting-desc">Max tokens for context injection</span>
+          </div>
+          <select id="token-limit-select" class="setting-select">
+            <option value="4000">4K tokens</option>
+            <option value="8000" selected>8K tokens</option>
+            <option value="16000">16K tokens</option>
+            <option value="32000">32K tokens</option>
+          </select>
+        </div>
+
+        <!-- Export/Import (Phase 3) -->
+        <div class="setting-item export-import">
+          <div class="setting-info">
+            <span class="setting-label">Backup & Restore</span>
+            <span class="setting-desc">Export or import all saved contexts</span>
+          </div>
+          <div class="export-import-btns">
+            <button id="export-btn" class="btn-small">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export
+            </button>
+            <button id="import-btn" class="btn-small">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Import
+            </button>
+            <input type="file" id="import-file" accept=".json" style="display:none">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+  </div>
+
+  <!-- Context Item Template -->
+  <template id="context-item-template">
+    <div class="context-item" data-id="">
+      <div class="context-info">
+        <div class="context-platform"></div>
+        <div class="context-title"></div>
+        <div class="context-meta">
+          <span class="context-date"></span>
+          <span class="context-messages"></span>
+        </div>
+      </div>
+      <div class="context-actions">
+        <button class="btn-icon copy-btn" title="Copy Context ID">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+        </button>
+        <button class="btn-icon edit-btn" title="Rename">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+        </button>
+        <button class="btn-icon delete-btn" title="Delete">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Rename Modal -->
+  <div id="rename-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Rename Context</h3>
+      <input type="text" id="rename-input" placeholder="Enter new name">
+      <div class="modal-actions">
+        <button id="rename-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="rename-save" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
